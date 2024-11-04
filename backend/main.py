@@ -10,6 +10,7 @@ model = tf.keras.models.load_model("backend/my_model.keras")
 
 @app.post("/uploadfiles/")
 async def upload_files(files: list[UploadFile]):
+    
     return {"filenames": [file.filename for file in files]}
 
 @app.post("/predict")
