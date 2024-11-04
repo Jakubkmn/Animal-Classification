@@ -5,7 +5,7 @@ This project uses a capabilities of NN to predicit whenever the uploaded image i
 To run the backend:
 
 ```bash
-fastapi dev backend/run
+fastapi dev backend/main.py
 ```
 
 To run the frontend:
