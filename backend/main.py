@@ -3,10 +3,12 @@ from PIL import Image
 import tensorflow as tf
 import numpy as np
 import io
+import os
 
 app = FastAPI()
 
-model = tf.keras.models.load_model("backend/my_model.keras")
+model_path = os.path.join(os.path.dirname(__file__), "my_model.keras")
+model = tf.keras.models.load_model(model_path)
 
 @app.post("/uploadfiles/")
 async def upload_files(files: list[UploadFile]):
@@ -21,5 +23,6 @@ async def predict(file: UploadFile):
     image_array = np.expand_dims(image_array, axis=0)
 
     prediction = model.predict(image_array)
+
     label = "dog" if prediction[0][0] > 0.5 else "cat"
-    return {"prediction": label}
+    return {"prediction": label, "confidence": float(prediction[0][0])}
