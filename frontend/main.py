@@ -26,10 +26,10 @@ if uploaded_file is not None:
         img_byte_arr.seek(0)  # Reset pointer to the beginning of the stream
 
         files = {'file': ('uploaded_image.jpg', img_byte_arr, 'image/jpeg')}
-        response = requests.post("http://127.0.0.1:8000/predict/", files=files)
+        response = requests.post("http://backend_service:8000/predict/", files=files)
 
         if response.status_code == 200:
             prediction = response.json()
-            st.write(f"Prediction: {prediction['prediction']}")
+            st.subheader(f"Prediction: {prediction['prediction']}")
         else:
             st.write("Error in prediction: " + response.text)

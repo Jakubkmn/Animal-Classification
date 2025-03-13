@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile
+from fastapi.responses import RedirectResponse
 from PIL import Image
 import tensorflow as tf
 import numpy as np
@@ -10,9 +11,13 @@ app = FastAPI()
 model_path = os.path.join(os.path.dirname(__file__), "my_model.keras")
 model = tf.keras.models.load_model(model_path)
 
-@app.post("/uploadfiles/")
+@app.post("/uploadfiles/", include_in_schema=False)
 async def upload_files(files: list[UploadFile]):
     return {"filenames": [file.filename for file in files]}
+
+@app.get("/", include_in_schema=False)
+async def root():
+    return RedirectResponse("/docs")
 
 @app.post("/predict")
 async def predict(file: UploadFile):

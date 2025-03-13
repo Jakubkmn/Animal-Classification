@@ -7,6 +7,8 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app  # Mount the backend code for development
+    networks:
+      - mynetwork
     container_name: backend_service
 
   frontend:
@@ -19,4 +21,9 @@ services:
       - backend
     volumes:
       - ./frontend:/app  # Mount the frontend code for development
+    networks:
+      - mynetwork
     container_name: frontend_service
+
+networks:
+  mynetwork:
