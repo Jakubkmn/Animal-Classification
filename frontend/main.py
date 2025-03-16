@@ -3,15 +3,9 @@ import requests
 from PIL import Image
 import io
 
+st.set_page_config(page_title="Home page", page_icon="🐱🐶")
 
-# def display_images(uploaded_files):
-#     num_columns = len(uploaded_files)
-#     columns = st.columns(num_columns)
-
-#     for idx, uploaded_file in enumerate(uploaded_files):
-#         with columns[idx]:
-#             image = Image.open(uploaded_file)
-#             st.image(image, caption=uploaded_file.name)
+st.sidebar.header("Home page")
 
 st.title("Dog or Cat Classifier")
 
@@ -30,6 +24,6 @@ if uploaded_file is not None:
 
         if response.status_code == 200:
             prediction = response.json()
-            st.subheader(f"Prediction: {prediction['prediction']}")
+            st.subheader(f"The model is {prediction['confidence']:.1f}% confident that the image shows a {prediction['prediction'].capitalize()}")
         else:
             st.write("Error in prediction: " + response.text)

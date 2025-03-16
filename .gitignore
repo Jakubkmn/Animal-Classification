@@ -3,3 +3,4 @@ model/dataset
 backend/__pycache__/
 backend/.dockerignore
 .devcontainer
+backend/database.session
