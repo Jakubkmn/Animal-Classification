@@ -3,6 +3,7 @@ from fastapi.responses import RedirectResponse
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from datetime import datetime, timezone
 from typing import Annotated, Optional
+from azure_blob import upload_to_azure, get_all_images
 from PIL import Image
 import tensorflow as tf
 import numpy as np
@@ -22,6 +23,7 @@ SessionDep = Annotated[Session, Depends(get_session)]
 
 class IMGDB(SQLModel, table=True):
     id : int = Field(default=None, primary_key=True)
+    blob_name : str = Field(default=None, unique=True)
     label : str = Field(default=None)
     confidence : float = Field(default=None)
     timestamps : datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
@@ -49,18 +51,26 @@ async def predict(file: UploadFile, session: SessionDep):
     contents = await file.read() # Returns bytes
     label, confidence = predict_image(image_bytes=contents)
 
-    image_url = "pw.edu.pl"
+    image_url, blob_name = upload_to_azure(file.filename, contents)
 
-    # image_url = upload_to_azure(file.filename, image_bytes)
-
-    record = save_to_database(label, confidence=confidence, image_url=image_url, session=session)
+    save_to_database(label=label, blob_name=blob_name, confidence=confidence, image_url=image_url, session=session)
 
     return {"prediction": label, "confidence": confidence, "image_url": image_url}
 
 @app.get('/images')
-async def show_images(session: SessionDep):
+async def get_images(session: SessionDep):
     images = session.exec(select(IMGDB)).all()
     return images
+
+@app.get('/images/{blob_name}')
+async def get_image(blob_name: str, session: SessionDep):
+    image = session.exec(select(IMGDB).filter(IMGDB.blob_name == blob_name)).all()
+    return image
+
+@app.get('/gallery')
+async def show_images(session: SessionDep):
+    images = get_all_images()
+    return {"images": images}
 
 def predict_image(image_bytes: bytes):
     img = Image.open(io.BytesIO(image_bytes)).convert('RGB')
@@ -72,7 +82,7 @@ def predict_image(image_bytes: bytes):
     confidence = float(prediction[0][0]) * 100 if label == 'dog' else float(1 - prediction[0][0]) * 100
     return label, confidence
 
-def save_to_database(label: str, confidence: float, image_url: str, session: SessionDep):
-    instance = IMGDB(label=label, confidence=confidence, image_url=image_url)
+def save_to_database(label: str, blob_name: str, confidence: float, image_url: str, session: SessionDep):
+    instance = IMGDB(label=label, blob_name=blob_name, confidence=confidence, image_url=image_url)
     session.add(instance)
     session.commit()

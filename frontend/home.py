@@ -3,7 +3,7 @@ import requests
 from PIL import Image
 import io
 
-st.set_page_config(page_title="Home page", page_icon="🐱🐶")
+st.set_page_config(page_title="home", page_icon="🐱🐶")
 
 st.sidebar.header("Home page")
 

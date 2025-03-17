@@ -5,3 +5,5 @@ pillow
 numpy
 python-multipart
 sqlmodel
+azure-storage-blob
+dotenv

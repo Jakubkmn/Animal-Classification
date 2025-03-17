@@ -4,3 +4,4 @@ backend/__pycache__/
 backend/.dockerignore
 .devcontainer
 backend/database.session
+.env
