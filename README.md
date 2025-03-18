@@ -7,12 +7,15 @@ This project is a deep learning-based image classification system that identifie
 * FastAPI Backend: Handles image processing and model inference.
 * Streamlit Frontend: Provides a user-friendly interface for uploading images and viewing predictions.
 * Dockerized Deployment: Both frontend and backend run in separate Docker containers.
+* Azure Integration: Images are stored in the Azure Storage Blob.
 
 ## How It Works
 1. User uploads an image via the Streamlit web app.
 2. The image is sent to the FastAPI backend.
 3. The CNN model processes the image and returns a prediction (cat or dog).
 4. The result is displayed in the frontend.
+5. The data of the image is stored in the database
+6. The image is uploaded to Azure Storage Blob.
 
 ## Deployment
 * The backend listens on port 8000.
@@ -24,17 +27,18 @@ This project is a deep learning-based image classification system that identifie
 git clone https://github.com/Jakubkmn/Animal-Classification.git
 cd Animal-Classification
 ```
+### 2. Setup the .env for the Azure integration
 
-### 2. Build and Start the Containers
+### 3. Build and Start the Containers
 ```bash
 docker-compose up --build
 ```
 
-### 3. Access the Application
+### 4. Access the Application
 * Frontend (Streamlit UI): http://localhost:8501
 * Backend API (FastAPI Docs): http://localhost:8000/docs
 
-### 4. Upload an Image
+### 5. Upload an Image
 1. Opent the web app (localhost:8501)
 2. Upload an image of a cat or a dog
 3. View the prediction result
